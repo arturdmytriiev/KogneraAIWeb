@@ -1364,6 +1364,48 @@
             from { opacity: 1; visibility: visible; }
             to { opacity: 0; visibility: hidden; }
         }
+
+        .contact-form select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(17, 17, 17, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            background-image:
+                    linear-gradient(45deg, transparent 50%, var(--primary) 50%),
+                    linear-gradient(135deg, var(--primary) 50%, transparent 50%);
+            background-position:
+                    calc(100% - 20px) center,
+                    calc(100% - 15px) center;
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .contact-form select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+            background-image:
+                    linear-gradient(45deg, var(--text-light) 50%, transparent 50%),
+                    linear-gradient(135deg, transparent 50%, var(--text-light) 50%);
+        }
+
+        .contact-form select option {
+            background: var(--bg-darker);
+            color: var(--text-light);
+            padding: 10px;
+        }
+
+        .contact-form select:hover {
+            border-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -1774,7 +1816,12 @@
                             <input type="email" placeholder="Váš e-mail" v-model="form.email" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" placeholder="Téma" v-model="form.subject" required>
+                                <select v-model="form.projectIndex">
+                                    <option :value="null" disabled>Vyberte projekt</option>
+                                    <option v-for="(step,index) in projects" v-model="form.subject" :value="index" >
+                                        {{step.title}}
+                                    </option>
+                                </select>
                         </div>
                         <div class="form-group">
                             <textarea placeholder="Správa" v-model="form.message" ></textarea>
@@ -1856,7 +1903,8 @@
                 name: '',
                 email: '',
                 subject: '',
-                message: ''
+                message: '',
+                projectIndex: null
             });
 
             const showProjectModal = ref(false);
