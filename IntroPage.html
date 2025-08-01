@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KogneraAI – Agentúra pre umelú inteligenciu</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html{
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-dark: #000000;
+            --bg-darker: #0a0a0a;
+            --primary: #00ff22;
+            --primary-dark: #00cc00;
+            --primary-light: #33ff33;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+            --card-bg: rgba(17, 17, 17, 0.85);
+            --border-color: #222222;
+            --glow: 0 0 10px rgba(0, 255, 0, 0.7);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .hero h2 {
+            min-height: 150px;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            opacity: 0.15;
+            filter: grayscale(100%) contrast(120%);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.95) 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: var(--primary);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: var(--glow);
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(10, 10, 10, 0.8);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-left: 10px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            height: 60px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: var(--glow);
+        }
+
+        .hero h2 span {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .ai-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        /* Services Section */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 49%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 3px;
+            background: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.2);
+            border-color: var(--primary);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), transparent, transparent, var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            text-shadow: var(--glow);
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .service-desc {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Projects Section - карусель */
+        .projects {
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            margin: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.1);
+        }
+
+        .projects-carousel {
+            position: relative;
+            overflow: inherit;
+            width: 100%;
+        }
+
+        .slides-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 0 100px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.2);
+            border-color: var(--primary);
+        }
+
+        .project-img {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .project-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+        }
+
+        .project-content {
+            padding: 25px;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .project-title a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .project-title a:hover {
+            color: var(--primary);
+        }
+
+        .project-desc {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .project-tag {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: var(--glow);
+        }
+
+        .prev-btn {
+            left: 0;
+        }
+
+        .next-btn {
+            right: 0;
+        }
+
+        .indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--primary);
+            transform: scale(1.2);
+            box-shadow: var(--glow);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .team-member {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.2);
+            border-color: var(--primary);
+        }
+
+        .member-img {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .member-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+        }
+
+        .member-info {
+            padding: 25px 20px;
+        }
+
+        .member-name {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        .member-desc {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+            text-shadow: var(--glow);
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            margin: 30px;
+            padding: 50px 0;
+            border: 1px solid rgba(0, 255, 0, 0.1);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            color: var(--primary);
+            min-width: 40px;
+            text-shadow: var(--glow);
+        }
+
+        .contact-text h3 {
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .contact-text p, .contact-text a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-text a:hover {
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(17, 17, 17, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+            margin-top: 50px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
+            gap: 100px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: var(--glow);
+        }
+        .footer-navigation {
+            padding-left: 70px;
+            position: relative;
+        }
+
+        .footer-navigation::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .footer-navigation {
+                padding-left: 0;
+            }
+            .footer-navigation::before {
+                display: none;
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .footer-newsletter p {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(17, 17, 17, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 4px 0 0 4px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .newsletter-form button {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--glow);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .copyright a:hover {
+            text-shadow: var(--glow);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 15px) rotate(5deg); }
+            50% { transform: translate(10px, 30px) rotate(0deg); }
+            75% { transform: translate(-15px, 20px) rotate(-5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* Matrix Effect */
+        .matrix-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Modal Styles */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .project-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .project-modal-content {
+            background: var(--bg-darker);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            max-width: 1200px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--text-light);
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .project-header {
+            padding: 60px 40px 30px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            position: relative;
+        }
+
+        .project-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .project-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .project-gallery {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .gallery-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+            box-shadow: var(--glow);
+        }
+
+        .project-details {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .project-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tech-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            margin: 5px 5px 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .benefits-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .benefit-icon {
+            color: var(--primary);
+            min-width: 20px;
+            margin-top: 3px;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        .why-us {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .why-us-item {
+            display: flex;
+            gap: 15px;
+            background: rgba(17, 17, 17, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .why-us-icon {
+            font-size: 24px;
+            color: var(--primary);
+            min-width: 40px;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+        }
+
+        .why-us-text h4 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .why-us-text p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .process-step {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: var(--glow);
+        }
+
+        .project-footer {
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .project-footer .btn {
+            font-size: 1.1rem;
+            padding: 15px 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2.8rem;
+            }
+            .projects, .contact {
+                margin: 15px;
+            }
+            .project-main {
+                grid-template-columns: 1fr;
+            }
+            .project-gallery {
+                height: 400px;
+            }
+            .slide {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.95);
+                flex-direction: column;
+                padding: 20px 0;
+                backdrop-filter: blur(10px);
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 15px 20px;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section {
+                padding: 70px 0;
+            }
+
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .project-header {
+                padding: 40px 20px 20px;
+            }
+            .project-header h2 {
+                font-size: 2rem;
+            }
+            .project-main {
+                padding: 20px;
+            }
+            .project-gallery {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .projects, .contact {
+                margin: 10px;
+            }
+
+            .project-img {
+                height: 200px;
+            }
+        }
+
+        .testimonials {
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            margin: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.1);
+        }
+
+        .testimonials-container {
+            position: relative;
+            overflow: hidden;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding-bottom: 10px;
+        }
+
+        .testimonials-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial {
+            min-width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .quote-icon {
+            font-size: 36px;
+            color: var(--primary);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-gray);
+            font-style: italic;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .client-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--primary);
+        }
+
+        .client-details {
+            text-align: left;
+        }
+
+        .client-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .client-position {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .client-rating {
+            color: var(--primary);
+        }
+
+        .client-rating .filled {
+            color: gold;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-card {
+                padding: 30px 20px;
+            }
+
+            .testimonial-text {
+                font-size: 1rem;
+            }
+
+            .client-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .client-details {
+                text-align: center;
+            }
+        }
+
+        .thank-you-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .thank-you-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .thank-you-modal.auto-close {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        .thank-you-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .thank-you-modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .thank-you-modal-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; visibility: visible; }
+            to { opacity: 0; visibility: hidden; }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Видео фон -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-futuristic-interface-with-touch-controls-1278-large.mp4" type="video/mp4">
+            Váš prehliadač nepodporuje videá.
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <!-- Matrix эффект -->
+    <div class="matrix-effect" id="matrix"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="icons/photo_2025-07-30_16.13.56-Pica-removebg-preview.png" alt="Logo" class="logo-icon">
+                <h1>Kognera<span style="color: var(--primary);">AI</span></h1>
+            </div>
+            <button class="mobile-menu-btn" @click="toggleMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul :class="{ show: menuOpen }">
+                    <li> <a href="#hero">Hlavná stránka</a></li>
+                    <li><a href="#services">Služby</a></li>
+                    <li><a href="#projects">Projekty</a></li>
+                    <li><a href="#team">Tím</a></li>
+                    <li><a href="#contact">Kontakty</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="ai-particles" id="particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="fade-in" id="typed-title"></h2>
+                <p class="fade-in" id="typed-podtitle"></p>
+                <div class="hero-btns fade-in">
+                    <a href="#contact" class="btn">Začať spoluprácu</a>
+                    <a href="#services" class="btn btn-outline">Naše služby</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Naše služby</h2>
+                <p class="section-subtitle">Poskytujeme komplexné riešenia v oblasti umelej inteligencie pre rôzne odvetvia podnikania.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3 class="service-title">AI video a audio riešenia pre váš biznis</h3>
+                    <p class="service-desc">Vytvárame inteligentné video a audio riešenia pomocou AI – od generovania hlasu a prepisu po automatizovanú tvorbu obsahu a animácií.</p>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="service-title">Automatizácia predaja a marketingu s využitím AI</h3>
+                    <p class="service-desc">Efektívnejší marketing a predaj vďaka nástrojom, ktoré sa učia a prispôsobujú vašim zákazníkom.</p>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="service-title">Pokročilé AI riešenia a inteligentná automatizácia</h3>
+                    <p class="service-desc">Navrhujeme na mieru šité riešenia s generatívnou AI. Vytvárame inteligentné chatboty a AI agenty, ktoré zvyšujú efektivitu a optimalizujú vaše firemné procesy.
+
+                    </p>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-pencil-ruler"></i>
+                    </div>
+                    <h3 class="service-title">Pokročilý Prompt Engineering a optimalizácia AI modelov</h3>
+                    <p class="service-desc">Zabezpečujeme optimálny výkon AI modelov cez pokročilý návrh promptov a precíznu kalibráciu pre vaše podnikanie.</p>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="service-title">AI ako váš kreatívny partner pre obsah a dizajn</h3>
+                    <p class="service-desc">Využívame umelú inteligenciu na rýchlu a kvalitnú tvorbu vizuálneho aj textového obsahu, ktorý vystihuje vašu značku a osloví vaše publikum.</p>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="service-title">Implementácia AI do obchodných procesov</h3>
+                    <p class="service-desc">Bezproblémovo integrujeme AI do vašich kľúčových procesov pre automatizáciu úloh, optimalizáciu workflow a posilnenie vášho tímu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section - карусель -->
+    <section id="projects" class="section projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Naše riešenia</h2>
+                <p class="section-subtitle">Inovatívne prístupy k vašim obchodným výzvam pomocou umelej inteligencie</p>
+            </div>
+
+            <div class="projects-carousel">
+                <div class="slides-container" :style="{ transform: `translateX(-${currentProject * 100}%)` }">
+                    <div class="slide" v-for="(project, index) in projects" :key="index">
+                        <div class="project-card fade-in">
+                            <div class="project-img" :style="{ backgroundImage: `url('${project.image}')` }"></div>
+                            <div class="project-content">
+                                <h3 class="project-title"><a href="#" @click.prevent="openProjectModal(project)">{{ project.title }}</a></h3>
+                                <p class="project-desc">{{ project.desc }}</p>
+                                <div class="project-tags">
+                                    <span class="project-tag" v-for="(tag, tagIndex) in project.tags" :key="tagIndex">{{ tag }}</span>
+                                </div>
+                                <a href="#" class="btn btn-outline" @click.prevent="openProjectModal(project)">Viac informácií</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-btn prev-btn" @click="prevProject">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next-btn" @click="nextProject">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <div class="indicators">
+          <span
+                  v-for="(project, index) in projects"
+                  :key="index"
+                  class="indicator"
+                  :class="{ active: currentProject === index }"
+                  @click="currentProject = index"
+          ></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div class="project-modal" :class="{ active: showProjectModal }">
+        <div class="project-modal-content">
+            <button class="close-modal" @click="closeProjectModal">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div v-if="selectedProject" class="project-content-inner">
+                <div class="project-header">
+                    <h2>{{ selectedProject.title }}</h2>
+                    <p class="section-subtitle">{{ selectedProject.desc }}</p>
+                </div>
+
+                <div class="project-main">
+                    <div class="project-gallery">
+                        <img :src="selectedProject.images[selectedImageIndex]" :alt="selectedProject.title">
+                        <div class="gallery-nav">
+                            <div
+                                    v-for="(img, index) in selectedProject.images"
+                                    :key="index"
+                                    class="gallery-dot"
+                                    :class="{ active: selectedImageIndex === index }"
+                                    @click="selectedImageIndex = index"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="project-details">
+                        <div class="project-section">
+                            <h3>Čo ponúkame</h3>
+                            <p>{{ selectedProject.offer }}</p>
+
+                            <div class="tech-stack">
+                                <div class="tech-item" v-for="(tech, index) in selectedProject.technologies" :key="index">
+                                    <i :class="tech.icon"></i> {{ tech.name }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-section">
+                            <h3>Vaše výhody</h3>
+                            <ul class="benefits-list">
+                                <li v-for="(benefit, index) in selectedProject.benefits" :key="index">
+                                    <i class="fas fa-check-circle benefit-icon"></i>
+                                    {{ benefit }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="project-section">
+                            <h3>Prečo my?</h3>
+                            <div class="why-us">
+                                <div class="why-us-item" v-for="(reason, index) in selectedProject.whyUs" :key="index">
+                                    <div class="why-us-icon">
+                                        <i :class="reason.icon"></i>
+                                    </div>
+                                    <div class="why-us-text">
+                                        <h4>{{ reason.title }}</h4>
+                                        <p>{{ reason.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-section">
+                    <h3>Proces spolupráce</h3>
+                    <div class="process-steps">
+                        <div class="process-step" v-for="(step, index) in selectedProject.process" :key="index">
+                            <div class="step-number">{{ index + 1 }}</div>
+                            <h4>{{ step.title }}</h4>
+                            <p>{{ step.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-footer">
+                    <a href="#contact" class="btn" @click="closeProjectModal">
+                        <i class="fas fa-calendar-check"></i> Objednať konzultáciu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сomments -->
+    <section id="testimonials" class="section testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Hodnotenia klientov</h2>
+                <p class="section-subtitle">Čo o nás hovoria naši klienti</p>
+            </div>
+
+            <div class="testimonials-container">
+                <div class="testimonials-track" :style="{ transform: `translateX(-${currentTestimonial * 100}%)` }">
+                    <div class="testimonial" v-for="(testimonial, index) in testimonials" :key="index">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-text">{{ testimonial.text }}</p>
+                            <div class="client-info">
+                                <div class="client-avatar" :style="{ backgroundImage: `url('${testimonial.avatar}')` }"></div>
+                                <div class="client-details">
+                                    <h4 class="client-name">{{ testimonial.name }}</h4>
+                                    <p class="client-position">{{ testimonial.position }}</p>
+                                    <div class="client-rating">
+                                        <i class="fas fa-star" v-for="i in 5" :key="i" :class="{ 'filled': i <= testimonial.rating }"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-btn prev-btn" @click="prevTestimonial">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next-btn" @click="nextTestimonial">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <div class="indicators">
+                <span
+                        v-for="(testimonial, index) in testimonials"
+                        :key="index"
+                        class="indicator"
+                        :class="{ 'active': currentTestimonial === index }"
+                        @click="currentTestimonial = index"
+                ></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Team Section -->
+    <section id="team" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Náš tím</h2>
+                <p class="section-subtitle">Odborníci v oblasti umelej inteligencie, strojového učenia a analýzy údajov</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member fade-in">
+                    <div class="member-img" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Alexandra Petrova</h3>
+                        <p class="member-role">Hlavný dátový vedec</p>
+                        <p class="member-desc">Špecialista v hlbokom učení a počítačovom videní. PhD v oblasti umelej inteligencie.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member fade-in">
+                    <div class="member-img" style="background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Dmitrij Ivanov</h3>
+                        <p class="member-role">AI Architekt</p>
+                        <p class="member-desc">Expert na návrh škálovateľných AI systémov. Špecializácia - NLP a generatívne modely.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="team-member fade-in">
+                    <div class="member-img" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Michal Kuznecov</h3>
+                        <p class="member-role">ML Inžinier</p>
+                        <p class="member-desc">Špecialista na MLOps a nasadzovanie modelov do produkcie. Expert na cloudové AI platformy.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Kontaktujte nás</h2>
+                <p class="section-subtitle">Ste pripravení začať projekt? Zanechajte žiadosť a my sa s vami čoskoro skontaktujeme.</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item fade-in">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Adresa</h3>
+                            <p>Bratislava, Gustava Mallého 2, 84101</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item fade-in">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Telefón</h3>
+                            <p><a href="tel:+421907293056">+421 907 293 056</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item fade-in">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Email</h3>
+                            <p><a href="mailto:info@kagneraai.com">info@kagneraAi.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item fade-in">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Otváracie hodiny</h3>
+                            <p>Po-Pia: 9:00 - 20:00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form fade-in">
+                    <form @submit.prevent="submitForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Vaše meno" v-model="form.name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Váš e-mail" v-model="form.email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Téma" v-model="form.subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Správa" v-model="form.message" ></textarea>
+                        </div>
+                        <button type="submit" class="btn">Odoslať správu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Thanks modal -->
+    <div class="thank-you-modal" :class="{ active: showThankYouModal }">
+        <div class="thank-you-modal-content">
+            <h2>Ďakujeme!</h2>
+            <p>Vaša správa bola odoslaná. Čoskoro vás budeme kontaktovať.</p>
+            <button class="btn" @click="closeThankYouModal">
+                <i class="fas fa-check"></i> OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <div class="logo">
+                        <h3>Kognera<span style="color: var(--primary);">AI</span></h3>
+                    </div>
+                    <p style="color: var(--text-gray); margin-top: 20px; line-height: 1.6;">Líder v oblasti vývoja a implementácie inovatívnych riešení v oblasti umelej inteligencie pre podnikanie</p>
+                </div>
+
+                <div class="footer-col footer-navigation">
+                    <h3>Navigácia</h3>
+                    <ul class="footer-links">
+                        <li><a href="#hero">Hlavná stránka</a></li>
+                        <li><a href="#services">Služby</a></li>
+                        <li><a href="#projects">Projekty</a></li>
+                        <li><a href="#team">Tím</a></li>
+                        <li><a href="#contact">Kontakty</a></li>
+                    </ul>
+                </div>
+
+                <div  class="footer-col footer-newsletter">
+                    <h3>Rozosielanie</h3>
+                    <p>Prihláste sa k odberu nášho spravodajstva, aby ste dostávali novinky o najnovších vývojových trendoch v oblasti umelej inteligencie.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Váš e-mail" required>
+                        <button type="submit" @click.prevent="submitForFollow"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Kognera AI Agency. Všetky práva vyhradené.</p>
+            </div>
+
+            <!--Thanks for Follow Modal -->
+            <div class="thank-you-modal"
+                 :class="{ active: showThankYouModalFollow }"
+                 data-type="follow">
+                <div class="thank-you-modal-content">
+                    <h2>Ďakujeme!</h2>
+                    <p>Že ste sa prihlásili k odberu nášho spravodajstva.</p>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</div>
+
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const menuOpen = ref(false);
+            const form = ref({
+                name: '',
+                email: '',
+                subject: '',
+                message: ''
+            });
+
+            const showProjectModal = ref(false);
+            const selectedProject = ref(null);
+            const selectedImageIndex = ref(0);
+            const showThankYouModal = ref(false);
+            const showThankYouModalFollow = ref(false);
+            let thankYouTimer = null;
+
+            const projects = ref([
+                {
+                    id: 1,
+                    image: "project-icons/first_project(blure).png",
+                    title: "AI pre digitálny obsah",
+                    desc: "Automatizovaná tvorba Reels a Shorts – od scenára cez dabing až po strih. Využívame nástroje AI na rýchlu výrobu videí s prekladom, hlasovým klonovaním a profesionálnym výstupom – pre značky, ktoré chcú zaujať publikum rýchlo, moderne a bez zbytočných komplikácií.",
+                    tags: ["AI video generácia", "Tvorba vizuálov s AI" , "Preklad videí", "Generatívne médiá",  "Branding s AI"],
+                    offer: "Vytvoríme pre vás špeciálne trénované AI modely, ktoré budú predpovedať dopyt po tovare na základe historických údajov, sezónnych vzorcov a externých faktorov. Naša platforma optimalizuje vaše zásoby a zvyšuje efektivitu.",
+                    technologies: [
+                        { name: "Hlboké učenie", icon: "fas fa-brain" },
+                        { name: "Prediktívne modely", icon: "fas fa-chart-line" },
+                        { name: "Dátová analýza", icon: "fas fa-database" },
+                        { name: "Cloudové riešenia", icon: "fas fa-cloud" }
+                    ],
+                    benefits: [
+                        "Zvýšenie presnosti plánovania zásob o 30-40%",
+                        "Zníženie nákladov na skladovanie o 20-25%",
+                        "Zvýšenie tržieb vďaka optimalizovanému sortimentu",
+                        "Automatizácia procesu objednávok a doplňovania zásob"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-lightbulb",
+                            title: "Špecializované know-how",
+                            description: "Máme overené postupy špeciálne pre maloobchodný sektor"
+                        },
+                        {
+                            icon: "fas fa-cogs",
+                            title: "Flexibilné riešenia",
+                            description: "Prispôsobíme sa vašim existujúcim systémom a procesom"
+                        },
+                        {
+                            icon: "fas fa-headset",
+                            title: "Kompletná podpora",
+                            description: "Technická a konzultačná podpora počas celej implementácie"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Analýza potrieb",
+                            description: "Detailné posúdenie vašich dátových zdrojov a obchodných procesov"
+                        },
+                        {
+                            title: "Návrh riešenia",
+                            description: "Vypracovanie stratégie a technickej koncepcie na mieru"
+                        },
+                        {
+                            title: "Vývoj a testovanie",
+                            description: "Tvorba AI modelov a ich testovanie na reálnych dátach"
+                        },
+                        {
+                            title: "Implementácia a školenie",
+                            description: "Nasadenie riešenia a zaškolenie vášho tímu"
+                        },
+                        {
+                            title: "Optimalizácia a podpora",
+                            description: "Priebežné vylepšovanie a technická podpora"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135133-33d364e7d1b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                },
+                {
+                    id: 2,
+                    image: "https://images.unsplash.com/photo-1677442135722-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    title: "AI pre predaj a marketing",
+                    desc: "Ponúkame komplexné AI riešenia zamerané na automatizáciu obchodných procesov, optimalizáciu práce na trhoviskách a tvorbu vizuálneho obsahu. Od auditu až po implementáciu – pomáhame firmám efektívne škálovať a znižovať náklady pomocou umelej inteligencie.",
+                    tags: ["AI stratégia", "Automatizácia procesov","Optimalizácia práce","Workflow optimalizácia", "AI vo vizuálnej komunikácii"],
+                    offer: "Vyvinieme AI systém pre analýzu medicínskych snímok a pacientských dát. Naše riešenie pomáha lekárom pri včasnej diagnostike a personalizovanej liečbe, pričom zachováva najvyššie štandardy ochrany údajov.",
+                    technologies: [
+                        { name: "Počítačové videnie", icon: "fas fa-eye" },
+                        { name: "Spracovanie obrazu", icon: "fas fa-image" },
+                        { name: "DICOM štandard", icon: "fas fa-file-medical" },
+                        { name: "Bezpečnosť údajov", icon: "fas fa-shield-alt" }
+                    ],
+                    benefits: [
+                        "Presnejšia a rýchlejšia diagnostika",
+                        "Zníženie pravdepodobnosti ľudských chýb",
+                        "Personalizované liečebné plány pre pacientov",
+                        "Kompletne šifrované a bezpečné riešenie"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-stethoscope",
+                            title: "Zdravotnícke expertízy",
+                            description: "Pracujeme s lekármi na vývoji klinicky relevantných riešení"
+                        },
+                        {
+                            icon: "fas fa-user-shield",
+                            title: "Dôvernosť údajov",
+                            description: "Dodržiavame GDPR a šifrujeme všetky citlivé údaje"
+                        },
+                        {
+                            icon: "fas fa-certificate",
+                            title: "Certifikované riešenie",
+                            description: "Náš systém spĺňa prísne zdravotnícke normy a certifikácie"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Konzultácia s odborníkmi",
+                            description: "Spoločné definovanie cieľov a požiadaviek"
+                        },
+                        {
+                            title: "Návrh architektúry",
+                            description: "Vytvorenie bezpečnostného konceptu a technickej architektúry"
+                        },
+                        {
+                            title: "Vývoj a validácia",
+                            description: "Tvorba AI modelov a ich overovanie na anonymizovaných dátach"
+                        },
+                        {
+                            title: "Integrácia do praxe",
+                            description: "Plynulé nasadenie do vášho pracovného prostredia"
+                        },
+                        {
+                            title: "Kontinuálny vývoj",
+                            description: "Pravidelné aktualizácie a vylepšovanie systému"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135722-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1581595219319-4e8a25981235?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1581595219319-4e8a25981235?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                },
+                {
+                    id: 3,
+                    image: "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    title: "Inteligentná automatizácia s podporou AI",
+                    desc: "Tvoríme GPT chatboty na mieru pre zákaznícku podporu, HR, školenia aj internú komunikáciu. Fungujú na platformách ako Telegram, WhatsApp, Discord či web a automatizujú opakujúce sa úlohy, onboarding aj interaktívne trenažéry s realistickými scenármi.",
+                    tags: ["HR automatizácia", "AI trenažéry", "Zákaznícka podpora s AI","Zákaznícka podpora s AI", "Konverzačné školenia"],
+                    offer: "Vytvoríme pre vás AI finančného asistenta, ktorý poskytuje personalizované rady pre investície, správu rozpočtu a riadenie rizík. Systém kombinuje analýzu trhových trendov s individuálnymi finančnými cieľmi klientov.",
+                    technologies: [
+                        { name: "Spracovanie jazyka", icon: "fas fa-comment-dots" },
+                        { name: "Prediktívna analýza", icon: "fas fa-calculator" },
+                        { name: "Analýza rizík", icon: "fas fa-chart-pie" },
+                        { name: "Realtime spracovanie", icon: "fas fa-bolt" }
+                    ],
+                    benefits: [
+                        "Personalizované investičné odporúčania",
+                        "Automatizované sledovanie trhových trendov",
+                        "Rizikové profily prispôsobené každému klientovi",
+                        "24/7 dostupnosť finančného poradenstva"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-lock",
+                            title: "Bankové zabezpečenie",
+                            description: "Používame šifrovanie na úrovni finančných inštitúcií"
+                        },
+                        {
+                            icon: "fas fa-sync",
+                            title: "Realtime aktualizácie",
+                            description: "Naše modely sa neustále učí z nových trhových dát"
+                        },
+                        {
+                            icon: "fas fa-hand-holding-usd",
+                            title: "Zvýšenie ziskov",
+                            description: "Klienti dosahujú v priemere o 15-20% vyššie výnosy"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Analýza finančných procesov",
+                            description: "Posúdenie vašich služieb a cieľových skupín"
+                        },
+                        {
+                            title: "Návrh AI stratégie",
+                            description: "Výber optimálnych modelov pre vaše potreby"
+                        },
+                        {
+                            title: "Vývoj a testovanie",
+                            description: "Tvorba a overovanie finančných modelov"
+                        },
+                        {
+                            title: "Integrácia s existujúcimi systémami",
+                            description: "Bezproblémové prepojenie s vašou infraštruktúrou"
+                        },
+                        {
+                            title: "Spustenie a monitorovanie",
+                            description: "Nasadenie a nepretržité sledovanie výkonnosti"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                },
+                {
+                    id: 4,
+                    image: "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    title: "Prompt Engineering a tuning modelov",
+                    desc: "Navrhujeme personalizované prompty pre biznisové úlohy – od tvorby Buyer Persony, CJM a mediálnych plánov až po nastavenie jedinečného tónu hlasu vašej značky. Dodávame optimalizované balíčky promptov pre ilustrácie, sociálne siete aj reklamu, čím zvyšujeme efektivitu práce s AI a kvalitu výstupov.",
+                    tags: ["Prompt engineering", "Optimalizácia výstupov AI", "AI tuning","Custom prompty", "Generovanie nápadov"],
+                    offer: "Vytvoríme pre vás AI finančného asistenta, ktorý poskytuje personalizované rady pre investície, správu rozpočtu a riadenie rizík. Systém kombinuje analýzu trhových trendov s individuálnymi finančnými cieľmi klientov.",
+                    technologies: [
+                        { name: "Spracovanie jazyka", icon: "fas fa-comment-dots" },
+                        { name: "Prediktívna analýza", icon: "fas fa-calculator" },
+                        { name: "Analýza rizík", icon: "fas fa-chart-pie" },
+                        { name: "Realtime spracovanie", icon: "fas fa-bolt" }
+                    ],
+                    benefits: [
+                        "Personalizované investičné odporúčania",
+                        "Automatizované sledovanie trhových trendov",
+                        "Rizikové profily prispôsobené každému klientovi",
+                        "24/7 dostupnosť finančného poradenstva"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-lock",
+                            title: "Bankové zabezpečenie",
+                            description: "Používame šifrovanie na úrovni finančných inštitúcií"
+                        },
+                        {
+                            icon: "fas fa-sync",
+                            title: "Realtime aktualizácie",
+                            description: "Naše modely sa neustále učí z nových trhových dát"
+                        },
+                        {
+                            icon: "fas fa-hand-holding-usd",
+                            title: "Zvýšenie ziskov",
+                            description: "Klienti dosahujú v priemere o 15-20% vyššie výnosy"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Analýza finančných procesov",
+                            description: "Posúdenie vašich služieb a cieľových skupín"
+                        },
+                        {
+                            title: "Návrh AI stratégie",
+                            description: "Výber optimálnych modelov pre vaše potreby"
+                        },
+                        {
+                            title: "Vývoj a testovanie",
+                            description: "Tvorba a overovanie finančných modelov"
+                        },
+                        {
+                            title: "Integrácia s existujúcimi systémami",
+                            description: "Bezproblémové prepojenie s vašou infraštruktúrou"
+                        },
+                        {
+                            title: "Spustenie a monitorovanie",
+                            description: "Nasadenie a nepretržité sledovanie výkonnosti"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                },
+                {
+                    id: 5,
+                    image: "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    title: "AI riešenia pre vizuálny a textový obsah",
+                    desc: "Tvoríme textový aj vizuálny obsah pomocou AI – od článkov, scenárov a prezentácií až po logá, bannery, ilustrácie a video animácie. Využívame AI nástroje  na rýchlu, efektívnu a kreatívnu produkciu obsahu pre vaše podnikanie.",
+                    tags: ["AI obsah", "AI dizajn", "Video animácie s AI","AI marketingový obsah", "Scenáre s AI"],
+                    offer: "Vytvoríme pre vás AI finančného asistenta, ktorý poskytuje personalizované rady pre investície, správu rozpočtu a riadenie rizík. Systém kombinuje analýzu trhových trendov s individuálnymi finančnými cieľmi klientov.",
+                    technologies: [
+                        { name: "Spracovanie jazyka", icon: "fas fa-comment-dots" },
+                        { name: "Prediktívna analýza", icon: "fas fa-calculator" },
+                        { name: "Analýza rizík", icon: "fas fa-chart-pie" },
+                        { name: "Realtime spracovanie", icon: "fas fa-bolt" }
+                    ],
+                    benefits: [
+                        "Personalizované investičné odporúčania",
+                        "Automatizované sledovanie trhových trendov",
+                        "Rizikové profily prispôsobené každému klientovi",
+                        "24/7 dostupnosť finančného poradenstva"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-lock",
+                            title: "Bankové zabezpečenie",
+                            description: "Používame šifrovanie na úrovni finančných inštitúcií"
+                        },
+                        {
+                            icon: "fas fa-sync",
+                            title: "Realtime aktualizácie",
+                            description: "Naše modely sa neustále učí z nových trhových dát"
+                        },
+                        {
+                            icon: "fas fa-hand-holding-usd",
+                            title: "Zvýšenie ziskov",
+                            description: "Klienti dosahujú v priemere o 15-20% vyššie výnosy"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Analýza finančných procesov",
+                            description: "Posúdenie vašich služieb a cieľových skupín"
+                        },
+                        {
+                            title: "Návrh AI stratégie",
+                            description: "Výber optimálnych modelov pre vaše potreby"
+                        },
+                        {
+                            title: "Vývoj a testovanie",
+                            description: "Tvorba a overovanie finančných modelov"
+                        },
+                        {
+                            title: "Integrácia s existujúcimi systémami",
+                            description: "Bezproblémové prepojenie s vašou infraštruktúrou"
+                        },
+                        {
+                            title: "Spustenie a monitorovanie",
+                            description: "Nasadenie a nepretržité sledovanie výkonnosti"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                },
+                {
+                    id: 6,
+                    image: "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    title: "AI pre interné systémy a workflow",
+                    desc: "Pomáhame firmám zefektívniť vnútorné procesy pomocou AI. Realizujeme audit obchodných operácií, navrhujeme AI stratégiu na mieru a implementujeme automatizáciu kľúčových činností vrátane práce na trhoviskách či vizuálnych úloh. Výsledkom je úspora času, zníženie nákladov a vyššia výkonnosť tímu.",
+                    tags: ["AI workflow ", "AI audit", "AI pre firmy","Automatizácia práce s obsahom", "Interné AI systémy"],
+                    offer: "Vytvoríme pre vás AI finančného asistenta, ktorý poskytuje personalizované rady pre investície, správu rozpočtu a riadenie rizík. Systém kombinuje analýzu trhových trendov s individuálnymi finančnými cieľmi klientov.",
+                    technologies: [
+                        { name: "Spracovanie jazyka", icon: "fas fa-comment-dots" },
+                        { name: "Prediktívna analýza", icon: "fas fa-calculator" },
+                        { name: "Analýza rizík", icon: "fas fa-chart-pie" },
+                        { name: "Realtime spracovanie", icon: "fas fa-bolt" }
+                    ],
+                    benefits: [
+                        "Personalizované investičné odporúčania",
+                        "Automatizované sledovanie trhových trendov",
+                        "Rizikové profily prispôsobené každému klientovi",
+                        "24/7 dostupnosť finančného poradenstva"
+                    ],
+                    whyUs: [
+                        {
+                            icon: "fas fa-lock",
+                            title: "Bankové zabezpečenie",
+                            description: "Používame šifrovanie na úrovni finančných inštitúcií"
+                        },
+                        {
+                            icon: "fas fa-sync",
+                            title: "Realtime aktualizácie",
+                            description: "Naše modely sa neustále učí z nových trhových dát"
+                        },
+                        {
+                            icon: "fas fa-hand-holding-usd",
+                            title: "Zvýšenie ziskov",
+                            description: "Klienti dosahujú v priemere o 15-20% vyššie výnosy"
+                        }
+                    ],
+                    process: [
+                        {
+                            title: "Analýza finančných procesov",
+                            description: "Posúdenie vašich služieb a cieľových skupín"
+                        },
+                        {
+                            title: "Návrh AI stratégie",
+                            description: "Výber optimálnych modelov pre vaše potreby"
+                        },
+                        {
+                            title: "Vývoj a testovanie",
+                            description: "Tvorba a overovanie finančných modelov"
+                        },
+                        {
+                            title: "Integrácia s existujúcimi systémami",
+                            description: "Bezproblémové prepojenie s vašou infraštruktúrou"
+                        },
+                        {
+                            title: "Spustenie a monitorovanie",
+                            description: "Nasadenie a nepretržité sledovanie výkonnosti"
+                        }
+                    ],
+                    images: [
+                        "https://images.unsplash.com/photo-1677442135723-5f8ea49cec8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                    ]
+                }
+            ]);
+            const testimonials = ref([
+                {
+                    id: 1,
+                    name: "Marek Kováč",
+                    position: "CEO, TechSolutions s.r.o.",
+                    text: "KogneraAI nám pomohla implementovať AI systém pre analýzu trhových dát. Výsledkom bolo zvýšenie presnosti predpovedí o 40% a výrazné zníženie nákladov. Tím bol veľmi profesionálny a reagoval na všetky naše požiadavky.",
+                    rating: 5,
+                    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
+                },
+                {
+                    id: 2,
+                    name: "Zuzana Horváthová",
+                    position: "Marketingová riaditeľka, FashionBrand",
+                    text: "Automatizácia tvorby vizuálneho obsahu pomocou AI nám ušetrila stovky hodín práce. KogneraAI vytvorili presne to, čo sme potrebovali - efektívne riešenie pre rýchlu produkciu kvalitného obsahu pre sociálne siete. Veľmi odporúčam!",
+                    rating: 4,
+                    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
+                },
+                {
+                    id: 3,
+                    name: "Peter Novák",
+                    position: "IT Manažér, Finančná skupina",
+                    text: "Implementovali sme AI chatbot pre zákaznícku podporu a výsledky predčili naše očakávania. Odpovede sú presné a konzistentné, čo nám umožnilo znížiť náklady na podporu o 30%. Tím KogneraAI je skutočne expert v oblasti AI.",
+                    rating: 5,
+                    avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80"
+                }
+            ]);
+
+            const currentTestimonial = ref(0);
+
+            const nextTestimonial = () => {
+                currentTestimonial.value = (currentTestimonial.value + 1) % testimonials.value.length;
+            };
+
+            const prevTestimonial = () => {
+                currentTestimonial.value = (currentTestimonial.value - 1 + testimonials.value.length) % testimonials.value.length;
+            };
+
+            let testimonialsInterval;
+
+            const startTestimonialsCarousel = () => {
+                testimonialsInterval = setInterval(() => {
+                    nextTestimonial();
+                }, 5000);
+            };
+
+            const stopTestimonialsCarousel = () => {
+                clearInterval(testimonialsInterval);
+            };
+
+
+
+            const currentProject = ref(0);
+
+            const nextProject = () => {
+                currentProject.value = (currentProject.value + 1) % projects.value.length;
+            };
+
+            const prevProject = () => {
+                currentProject.value = (currentProject.value - 1 + projects.value.length) % projects.value.length;
+            };
+
+            // Автоматическая прокрутка карусели
+            let carouselInterval;
+
+            const startCarousel = () => {
+                carouselInterval = setInterval(() => {
+                    nextProject();
+                }, 7000);
+            };
+
+            const stopCarousel = () => {
+                clearInterval(carouselInterval);
+            };
+
+            const toggleMenu = () => {
+                menuOpen.value = !menuOpen.value;
+            };
+
+            const submitForm = () => {
+                showThankYouModal.value = true;
+                document.body.style.overflow = 'hidden';
+                form.value = { name: '', email: '', subject: '', message: '' };
+            };
+
+            const closeThankYouModal = () => {
+                showThankYouModal.value = false;
+                document.body.style.overflow = '';
+            };
+
+            const submitForFollow = () => {
+                showThankYouModalFollow.value = true;
+                document.body.style.overflow = 'hidden';
+
+
+                if (thankYouTimer) {
+                    clearTimeout(thankYouTimer);
+                }
+
+                thankYouTimer = setTimeout(() => {
+
+                    const modal = document.querySelector('.thank-you-modal[data-type="follow"]');
+                    if (modal) {
+                        modal.classList.add('auto-close');
+
+                        setTimeout(() => {
+                            closeThankYouModalFollow();
+                        }, 500);
+                    }
+                }, 3000);
+            }
+            const closeThankYouModalFollow = () => {
+                showThankYouModalFollow.value = false;
+                document.body.style.overflow = '';
+
+                const modal = document.querySelector('.thank-you-modal[data-type="follow"]');
+                if (modal) {
+                    modal.classList.remove('auto-close');
+                }
+
+                if (thankYouTimer) {
+                    clearTimeout(thankYouTimer);
+                    thankYouTimer = null;
+                }
+            }
+
+
+            const openProjectModal = (project) => {
+                selectedProject.value = project;
+                selectedImageIndex.value = 0;
+                showProjectModal.value = true;
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeProjectModal = () => {
+                showProjectModal.value = false;
+                document.body.style.overflow = '';
+            };
+
+            // Анимация при прокрутке
+            const setupAnimations = () => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('fade-in');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.service-card, .project-card, .team-member, .contact-item, .contact-form').forEach(el => {
+                    observer.observe(el);
+                });
+            };
+
+            // Создание частиц для герой-секции
+            const createParticles = () => {
+                const particlesContainer = document.getElementById('particles');
+                if (!particlesContainer) return;
+
+                const particleCount = 30;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+
+                    // Случайные параметры
+                    const size = Math.random() * 10 + 2;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const animationDuration = Math.random() * 20 + 10;
+                    const delay = Math.random() * 5;
+
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.top = `${posY}%`;
+                    particle.style.animationDuration = `${animationDuration}s`;
+                    particle.style.animationDelay = `${delay}s`;
+                    particle.style.opacity = Math.random() * 0.5 + 0.1;
+
+                    particlesContainer.appendChild(particle);
+                }
+            };
+
+            // Matrix эффект
+            const createMatrixEffect = () => {
+                const canvas = document.createElement('canvas');
+                const container = document.getElementById('matrix');
+                if (!container) return;
+
+                container.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+
+                const chars = "01";
+                const fontSize = 14;
+                const columns = canvas.width / fontSize;
+                const drops = [];
+
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = 1;
+                }
+
+                const draw = () => {
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+                    ctx.font = `${fontSize}px monospace`;
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+
+                        drops[i]++;
+                    }
+                };
+
+                setInterval(draw, 33);
+
+                window.addEventListener('resize', () => {
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                });
+            };
+
+            const typedTitleAnimnation = () => {
+                const titleElement = document.getElementById('typed-title');
+                if (titleElement) {
+                    new Typed('#typed-title', {
+                        strings: ['Budúcnosť <span style="color: var(--primary);">umelej inteligencie</span> je už tu'],
+                        typeSpeed: 50,
+                        startDelay: 500,
+                        showCursor: false,
+                        cursorChar: '|',
+                        contentType: 'html',
+                        onComplete: (self) => {
+                            const cursor = self.cursor;
+                            if (cursor) {
+                                cursor.style.display = 'none';
+                            }
+                        }
+                    })
+                }
+            }
+
+            const podTypedTitleAnimnation = () => {
+                const podTitleElement = document.getElementById('typed-podtitle');
+                if(podTitleElement){
+                    new Typed('#typed-podtitle', {
+                        strings: ['Kognera<span style="color: var(--primary)"> AI</span> Agency - špičková agentúra v oblasti umelej inteligencie, ktorá vytvára inovatívne riešenia pre podnikanie. Premieňame dáta na strategickú výhodu.'],
+                        typeSpeed: 25,
+                        startDelay: 3500,
+                        showCursor: false,
+                        cursorChar: '|',
+                        contentType: 'html',
+                        onComplete: (self) => {
+                            const cursor = self.cursor;
+                            if (cursor) {
+                                cursor.style.display = 'none';
+                            }
+                        }
+                    })
+                }
+            }
+
+            const  carouselCursors = () => {
+                const carousel = document.querySelector('.projects-carousel');
+                if (carousel) {
+                    carousel.addEventListener('mouseenter', stopCarousel);
+                    carousel.addEventListener('mouseleave', startCarousel);
+                }
+            }
+
+
+
+            onMounted(() => {
+                setupAnimations();
+                createParticles();
+                createMatrixEffect();
+                startCarousel();
+                typedTitleAnimnation();
+                podTypedTitleAnimnation();
+                carouselCursors();
+                startTestimonialsCarousel();
+
+                const testimonialsContainer = document.querySelector('.testimonials-container');
+                if (testimonialsContainer) {
+                    testimonialsContainer.addEventListener('mouseenter', stopTestimonialsCarousel);
+                    testimonialsContainer.addEventListener('mouseleave', startTestimonialsCarousel);
+                }
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && showProjectModal.value) {
+                        closeProjectModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && showThankYouModal.value) {
+                        closeThankYouModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && showThankYouModalFollow.value) {
+                        closeThankYouModalFollow();
+                    }
+                });
+
+            })
+
+
+            return {
+                menuOpen,
+                form,
+                projects,
+                currentProject,
+                showProjectModal,
+                selectedProject,
+                selectedImageIndex,
+                testimonials,
+                currentTestimonial,
+                showThankYouModal,
+                showThankYouModalFollow,
+                toggleMenu,
+                submitForm,
+                nextProject,
+                prevProject,
+                openProjectModal,
+                closeProjectModal,
+                nextTestimonial,
+                prevTestimonial,
+                closeThankYouModal,
+                submitForFollow,
+                closeThankYouModalFollow
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
