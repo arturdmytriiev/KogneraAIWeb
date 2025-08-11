@@ -40,6 +40,7 @@
             min-height: 100vh;
         }
 
+
         .hero h2 {
             min-height: 150px;
         }
@@ -308,11 +309,13 @@
             border-radius: 8px;
             padding: 40px 30px;
             text-align: center;
-            transition: all 0.3s ease;
             border: 1px solid var(--border-color);
             backdrop-filter: blur(5px);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 250px;
         }
 
         .service-card:hover {
@@ -354,6 +357,105 @@
             color: var(--text-gray);
             line-height: 1.6;
         }
+
+        .service-card .service-content {
+            position: relative;
+            z-index: 2;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card .service-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.4s ease;
+            padding: 0 15px;
+        }
+
+        .service-card.active {
+            max-height: 600px;
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.2);
+            border-color: var(--primary);
+            background: rgba(17, 17, 17, 0.95);
+        }
+
+        .service-card.active .service-content {
+            transform: translateY(-10px);
+        }
+
+        .service-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.4s ease;
+            padding: 0 15px;
+        }
+
+        .service-card.active .service-details {
+            max-height: 500px;
+            opacity: 1;
+            padding: 15px;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .service-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0;
+        }
+
+        .service-details-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .service-details-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.4rem;
+            line-height: 1;
+            text-shadow: var(--glow);
+        }
+
+         /*   .service-toggle {
+                position: absolute;
+                bottom: 150px;
+                right: -5px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: rgba(0, 255, 0, 0.1);
+                color: var(--primary);
+                transition: all 0.3s ease;
+                z-index: 3;
+            }
+
+            .service-card:hover .service-toggle {
+                background: rgba(0, 255, 0, 0.2);
+                transform: scale(1.1);
+            }
+
+            .service-card.active .service-toggle {
+                transform: rotate(180deg);
+                background: var(--primary);
+                color: var(--bg-dark);
+            }
+
+            .service-toggle i {
+                transition: all 0.3s ease;
+            }
+            */
+
 
         /* Projects Section - карусель */
         .projects {
@@ -850,13 +952,17 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.5s ease;
-            overflow-y: auto;
+            overflow-y: scroll;
             padding: 20px;
         }
 
         .project-modal.active {
             opacity: 1;
             visibility: visible;
+            overflow-y: scroll;
+        }
+        .project-modal.active::-webkit-scrollbar{
+            display: none;
         }
 
         .project-modal-content {
@@ -869,6 +975,8 @@
             overflow-y: auto;
             position: relative;
             box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         .close-modal {
@@ -1464,63 +1572,61 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Naše služby</h2>
-                <p class="section-subtitle">Poskytujeme komplexné riešenia v oblasti umelej inteligencie pre rôzne odvetvia podnikania.</p>
+                <p class="section-subtitle">Kliknite na službu pre zobrazenie detailov</p>
             </div>
             <div class="services-grid">
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-camera"></i>
+                <div
+                        class="service-card fade-in"
+                        :class="{ 'active': activeService === 'service1' }"
+                        @click="toggleService('service1')"
+                >
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3 class="service-title">AI video a audio riešenia pre váš biznis</h3>
+                        <p class="service-desc">Vytvárame inteligentné video a audio riešenia pomocou AI...</p>
                     </div>
-                    <h3 class="service-title">AI video a audio riešenia pre váš biznis</h3>
-                    <p class="service-desc">Vytvárame inteligentné video a audio riešenia pomocou AI – od generovania hlasu a prepisu po automatizovanú tvorbu obsahu a animácií.</p>
+
+                    <div class="service-details">
+                        <ul class="service-details-list">
+                            <li>Automatická tvorba videí z textových šablón</li>
+                            <li>Inteligentný hlasový preklad do 20+ jazykov</li>
+                            <li>Analýza video obsahu pomocou počítačového videnia</li>
+                            <li>Optimalizácia pre sociálne médiá</li>
+                            <li>Generatívne animácie pre marketingové kampane</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-chart-line"></i>
+                <div
+                        class="service-card fade-in"
+                        :class="{ 'active': activeService === 'service2' }"
+                        @click="toggleService('service2')"
+                >
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="service-title">Automatizácia predaja a marketingu s využitím AI</h3>
+                        <p class="service-desc">Efektívnejší marketing a predaj vďaka nástrojom...</p>
                     </div>
-                    <h3 class="service-title">Automatizácia predaja a marketingu s využitím AI</h3>
-                    <p class="service-desc">Efektívnejší marketing a predaj vďaka nástrojom, ktoré sa učia a prispôsobujú vašim zákazníkom.</p>
-                </div>
 
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-comments"></i>
+                    <div class="service-details">
+                        <ul class="service-details-list">
+                            <li>Predpovedanie správania zákazníkov pomocou AI</li>
+                            <li>Automatizovaná personalizácia marketingových správ</li>
+                            <li>Optimalizácia cenovej stratégie v reálnom čase</li>
+                            <li>Analýza konkurencie a trhových trendov</li>
+                            <li>Generatívne reklamné kampane</li>
+                        </ul>
                     </div>
-                    <h3 class="service-title">Pokročilé AI riešenia a inteligentná automatizácia</h3>
-                    <p class="service-desc">Navrhujeme na mieru šité riešenia s generatívnou AI. Vytvárame inteligentné chatboty a AI agenty, ktoré zvyšujú efektivitu a optimalizujú vaše firemné procesy.
-
-                    </p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-pencil-ruler"></i>
-                    </div>
-                    <h3 class="service-title">Pokročilý Prompt Engineering a optimalizácia AI modelov</h3>
-                    <p class="service-desc">Zabezpečujeme optimálny výkon AI modelov cez pokročilý návrh promptov a precíznu kalibráciu pre vaše podnikanie.</p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <h3 class="service-title">AI ako váš kreatívny partner pre obsah a dizajn</h3>
-                    <p class="service-desc">Využívame umelú inteligenciu na rýchlu a kvalitnú tvorbu vizuálneho aj textového obsahu, ktorý vystihuje vašu značku a osloví vaše publikum.</p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3 class="service-title">Implementácia AI do obchodných procesov</h3>
-                    <p class="service-desc">Bezproblémovo integrujeme AI do vašich kľúčových procesov pre automatizáciu úloh, optimalizáciu workflow a posilnenie vášho tímu.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section - карусель -->
+     <!-- Projects Section - карусель -->
     <section id="projects" class="section projects">
         <div class="container">
             <div class="section-header">
@@ -1566,7 +1672,7 @@
     </section>
 
     <!-- Project Modal -->
-    <div class="project-modal" :class="{ active: showProjectModal }">
+    <div class="project-modal" :class="{ active: showProjectModal }" @click.self="closeProjectModal">
         <div class="project-modal-content">
             <button class="close-modal" @click="closeProjectModal">
                 <i class="fas fa-times"></i>
@@ -2327,6 +2433,17 @@
                 }
             ]);
 
+            const activeService = ref(null);
+
+            const toggleService = (serviceId) => {
+                if (activeService.value === serviceId) {
+                    activeService.value = null;
+                } else {
+                    activeService.value = serviceId;
+                }
+            };
+
+
             const currentTestimonial = ref(0);
 
             const nextTestimonial = () => {
@@ -2361,7 +2478,6 @@
                 currentProject.value = (currentProject.value - 1 + projects.value.length) % projects.value.length;
             };
 
-            // Автоматическая прокрутка карусели
             let carouselInterval;
 
             const startCarousel = () => {
@@ -2536,7 +2652,7 @@
                 if (titleElement) {
                     new Typed('#typed-title', {
                         strings: ['Budúcnosť <span style="color: var(--primary);">umelej inteligencie</span> je už tu'],
-                        typeSpeed: 50,
+                        typeSpeed: 30,
                         startDelay: 500,
                         showCursor: false,
                         cursorChar: '|',
@@ -2556,8 +2672,8 @@
                 if(podTitleElement){
                     new Typed('#typed-podtitle', {
                         strings: ['Kognera<span style="color: var(--primary)"> AI</span> Agency - špičková agentúra v oblasti umelej inteligencie, ktorá vytvára inovatívne riešenia pre podnikanie. Premieňame dáta na strategickú výhodu.'],
-                        typeSpeed: 25,
-                        startDelay: 3500,
+                        typeSpeed: 15,
+                        startDelay: 3000,
                         showCursor: false,
                         cursorChar: '|',
                         contentType: 'html',
@@ -2630,6 +2746,7 @@
                 currentTestimonial,
                 showThankYouModal,
                 showThankYouModalFollow,
+                activeService,
                 toggleMenu,
                 submitForm,
                 nextProject,
@@ -2640,7 +2757,8 @@
                 prevTestimonial,
                 closeThankYouModal,
                 submitForFollow,
-                closeThankYouModalFollow
+                closeThankYouModalFollow,
+                toggleService
             };
         }
     }).mount('#app');
