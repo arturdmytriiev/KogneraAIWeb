@@ -23,8 +23,8 @@
         :root {
             --bg-dark: #000000;
             --bg-darker: #0a0a0a;
-            --primary: #00ff22;
-            --primary-dark: #00cc00;
+            --primary: #50F2B7;
+            --primary-dark: #44F2A1;
             --primary-light: #33ff33;
             --text-light: #ffffff;
             --text-gray: #cccccc;
@@ -2554,7 +2554,7 @@
                 document.body.style.overflow = '';
             };
 
-            // Анимация при прокрутке
+
             const setupAnimations = () => {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -2569,7 +2569,7 @@
                 });
             };
 
-            // Создание частиц для герой-секции
+
             const createParticles = () => {
                 const particlesContainer = document.getElementById('particles');
                 if (!particlesContainer) return;
@@ -2580,7 +2580,6 @@
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
 
-                    // Случайные параметры
                     const size = Math.random() * 10 + 2;
                     const posX = Math.random() * 100;
                     const posY = Math.random() * 100;
@@ -2599,7 +2598,7 @@
                 }
             };
 
-            // Matrix эффект
+
             const createMatrixEffect = () => {
                 const canvas = document.createElement('canvas');
                 const container = document.getElementById('matrix');
